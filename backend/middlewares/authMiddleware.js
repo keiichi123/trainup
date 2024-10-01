@@ -2,10 +2,9 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import asyncHandler from "./asyncHandler.js";
 
-const authenticate = asyncHandler(async (req, res, next) => {
+const authenticate = async (req, res, next) => {
   let token;
 
-  // Read JWT from the 'jwt' cookie
   token = req.cookies.jwt;
 
   if (token) {
@@ -21,7 +20,7 @@ const authenticate = asyncHandler(async (req, res, next) => {
     res.status(401);
     throw new Error("Not authorized, no token.");
   }
-});
+};
 
 const authorizeAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
