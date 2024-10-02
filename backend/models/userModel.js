@@ -18,10 +18,19 @@ const userSchema = mongoose.Schema(
       required: true,
     },
 
-    isAdmin: {
-      type: Boolean,
+    edad: {
+      type: Number,
       required: true,
-      default: false,
+    },
+
+    estatura: {
+      type: Number,
+      required: true,
+    },
+
+    peso: {
+      type: Number,
+      required: true,
     },
   },
   { timestamps: true }

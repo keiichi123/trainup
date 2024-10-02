@@ -1,43 +1,78 @@
 import User from "../models/userModel.js";
-import asyncHandler from "../middlewares/asyncHandler.js";
+//import asyncHandler from "../middlewares/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import createToken from "../utils/createToken.js";
+import validator from "validator";
 
-const createUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+const createUser = async (req, res) => {
+  const { username, email, password, cpassword, edad, estatura, peso } =
+    req.body;
+  const userExists = await User.findOne({ email });
 
-  if (!username || !email || !password) {
-    throw new Error("Please fill all the inputs.");
+  if (
+    !username ||
+    !email ||
+    !cpassword ||
+    !password ||
+    !edad ||
+    !estatura ||
+    !peso
+  ) {
+    return res.status(400).json({ error: "Ingrese todos los datos" });
   }
 
-  const userExists = await User.findOne({ email });
-  if (userExists) res.status(400).send("User already exists");
+  if (!validator.isEmail(email)) {
+    return res.status(400).json({ error: "Email no valido" });
+  }
+  if (userExists) {
+    return res.status(400).json({ error: "El email ya está en uso" });
+  }
+  if (password !== cpassword) {
+    return res.status(400).json({ error: "La contraseña no coincide" });
+  }
+  if (!validator.isStrongPassword(password)) {
+    return res.status(400).json({ error: "Contraseña débil" });
+  }
+  if (!validator.isInt(String(edad), { min: 18, max: 100 })) {
+    return res.status(400).json({ error: "Edad no válida" });
+  }
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const newUser = new User({ username, email, password: hashedPassword });
+  const newUser = new User({
+    username,
+    email,
+    password: hashedPassword,
+    edad,
+    estatura,
+    peso,
+  });
 
   try {
     await newUser.save();
-    createToken(res, newUser._id);
+    const token = createToken(res, newUser._id);
 
-    res.status(201).json({
+    return res.status(201).json({
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
-      isAdmin: newUser.isAdmin,
+      edad: newUser.edad,
+      estatura: newUser.estatura,
+      peso: newUser.peso,
+      token,
     });
   } catch (error) {
-    res.status(400);
-    throw new Error("Invalid user data");
+    console.error(error);
+    return res.status(400).json({ error: "Datos no válidos" });
   }
-});
+};
 
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  console.log(email);
-  console.log(password);
+  if (!email || !password) {
+    return res.status(400).json({ error: "Ingrese todos los datos" });
+  }
 
   const existingUser = await User.findOne({ email });
 
@@ -48,34 +83,42 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 
     if (isPasswordValid) {
-      createToken(res, existingUser._id);
+      const token = createToken(res, existingUser._id);
 
       res.status(201).json({
         _id: existingUser._id,
         username: existingUser.username,
         email: existingUser.email,
-        isAdmin: existingUser.isAdmin,
+        password: existingUser.password,
+        edad: existingUser.edad,
+        estatura: existingUser.estatura,
+        peso: existingUser.peso,
+        token,
       });
       return;
+    } else {
+      return res.status(400).json({ error: "Inicio de sesión fallido" });
     }
+  } else {
+    return res.status(400).json({ error: "Ese usuario no existe" });
   }
-});
+};
 
-const logoutCurrentUser = asyncHandler(async (req, res) => {
+const logoutCurrentUser = async (req, res) => {
   res.cookie("jwt", "", {
     httyOnly: true,
     expires: new Date(0),
   });
 
-  res.status(200).json({ message: "Logged out successfully" });
-});
+  res.status(200).json({ message: "Sesión cerrada correctamente" });
+};
 
-const getAllUsers = asyncHandler(async (req, res) => {
+const getAllUsers = async (req, res) => {
   const users = await User.find({});
   res.json(users);
-});
+};
 
-const getCurrentUserProfile = asyncHandler(async (req, res) => {
+const getCurrentUserProfile = async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
@@ -88,36 +131,47 @@ const getCurrentUserProfile = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found.");
   }
-});
+};
 
-const updateCurrentUserProfile = asyncHandler(async (req, res) => {
+const updateCurrentUserProfile = async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
     user.username = req.body.username || user.username;
-    user.email = req.body.email || user.email;
+    user.edad = req.body.edad || user.edad;
+    user.estatura = req.body.estatura || user.estatura;
+    user.peso = req.body.peso || user.peso;
 
     if (req.body.password) {
+      if (!validator.isStrongPassword(req.body.password)) {
+        return res.status(400).json({ error: "Contraseña débil" });
+      }
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
       user.password = hashedPassword;
     }
 
+    if (!validator.isInt(String(user.edad), { min: 18, max: 100 })) {
+      return res.status(400).json({ error: "Edad no válida" });
+    }
     const updatedUser = await user.save();
 
     res.json({
       _id: updatedUser._id,
       username: updatedUser.username,
       email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
+      edad: updatedUser.edad,
+      estatura: updatedUser.estatura,
+      peso: updatedUser.peso,
     });
+    return;
   } else {
     res.status(404);
-    throw new Error("User not found");
+    return res.status(400).json({ error: "Ese usuario no existe" });
   }
-});
+};
 
-const deleteUserById = asyncHandler(async (req, res) => {
+const deleteUserById = async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user) {
@@ -132,9 +186,9 @@ const deleteUserById = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found.");
   }
-});
+};
 
-const getUserById = asyncHandler(async (req, res) => {
+const getUserById = async (req, res) => {
   const user = await User.findById(req.params.id).select("-password");
 
   if (user) {
@@ -143,9 +197,9 @@ const getUserById = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
-});
+};
 
-const updateUserById = asyncHandler(async (req, res) => {
+const updateUserById = async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user) {
@@ -165,7 +219,7 @@ const updateUserById = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
-});
+};
 
 export {
   createUser,
