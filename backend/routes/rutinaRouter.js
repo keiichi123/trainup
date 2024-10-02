@@ -13,7 +13,7 @@ const router = express.Router();
 router.get("/", authenticate, getRutinas);
 router.get("/:id", getRutina);
 router.post("/", createRutina);
-router.delete("/:id", deleteRutina);
-router.patch("/:id", updateRutina);
+router.delete("/:id", authenticate, deleteRutina);
+router.patch("/:id", authenticate, updateRutina);
 
 export default router;

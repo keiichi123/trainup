@@ -1,10 +1,11 @@
 import Rutina from "../models/rutinaModel.js";
+import SesionRutina from "../models/sesionRutinaModel.js";
 import mongoose from "mongoose";
 
 const createRutina = async (req, res) => {
   const { id_usuario, ejercicio, nivel, fecha_inicio, intervalo } = req.body;
 
-  console.log("Cuerpo de la solicitud:", req.body);
+  console.log("Cuerpo del POST kkkkk:", req.body);
   try {
     const rutina = await Rutina.create({
       id_usuario,
@@ -56,6 +57,7 @@ const deleteRutina = async (req, res) => {
     return res.status(404).json({ error: "No existe esa rutina" });
   }
   const rutina = await Rutina.findOneAndDelete({ _id: id });
+  await SesionRutina.deleteMany({ id_rutina: id });
   if (!rutina) {
     return res.status(404).json({ error: "No existe esa rutina" });
   }
@@ -64,14 +66,26 @@ const deleteRutina = async (req, res) => {
 
 const updateRutina = async (req, res) => {
   const { id } = req.params;
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No existe esa rutina" });
   }
-  const rutina = await Rutina.findOneAndUpdate({ _id: id }, ...req.body);
-  if (!rutina) {
-    return res.status(404).json({ error: "No existe esa rutina" });
+
+  try {
+    const rutina = await Rutina.findOneAndUpdate(
+      { _id: id },
+      { $set: req.body },
+      { new: true }
+    );
+
+    if (!rutina) {
+      return res.status(404).json({ error: "No existe esa rutina" });
+    }
+
+    res.status(200).json(rutina);
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar la rutina" });
   }
-  res.status(200).json(rutina);
 };
 
 export { createRutina, getRutina, getRutinas, deleteRutina, updateRutina };

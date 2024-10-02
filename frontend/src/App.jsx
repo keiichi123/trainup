@@ -9,6 +9,7 @@ import UserHome from "./pages/User/UserHome";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuthContext } from "./hooks/useAuthContext";
 import EditPerfil from "./pages/User/EditPerfil";
+import EditRutina from "./pages/User/EditRutina";
 
 function App() {
   const { user } = useAuthContext();
@@ -23,10 +24,18 @@ function App() {
           path="/register"
           element={!user ? <SignUp /> : <Navigate to="/" />}
         ></Route>
-        <Route path="/updateuser" element={<EditPerfil />}></Route>
+
         <Route
           path="/"
           element={user ? <UserHome /> : <Navigate to="/login" />}
+        ></Route>
+        <Route
+          path="/updateuser"
+          element={user ? <EditPerfil /> : <Navigate to="/login" />}
+        ></Route>
+        <Route
+          path="/updaterutina/:id"
+          element={user ? <EditRutina /> : <Navigate to="/login" />}
         ></Route>
       </Routes>
     </BrowserRouter>

@@ -29,7 +29,6 @@ const useCreateRutina = () => {
     const data = await response.json();
 
     if (response.ok) {
-      // dispatch({ type: "CREATE_RUTINAS", payload: data });
       await createSesionRutina(data._id, nivel);
       setIsLoading(true);
       return data;

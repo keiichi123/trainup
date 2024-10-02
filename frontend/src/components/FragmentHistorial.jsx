@@ -6,32 +6,52 @@ import logoApp from "../assets/logo_trainup1.png";
 function FragmentHistorial() {
   const [rutinas, setRutinas] = useState([]);
   const { user } = useAuthContext();
+
+  const fetchRutinas = async () => {
+    if (!user || !user.token) {
+      console.error("User or user token is missing");
+      return;
+    }
+
+    const response = await fetch("/api/rutinas/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    if (response.ok) {
+      const data = await response.json();
+      // Filtrar las rutinas que no tienen fecha_fin
+      const rutinasSinFechaFin = data.filter((rutina) => !rutina.fecha_fin);
+      setRutinas(rutinasSinFechaFin);
+    }
+  };
+
   useEffect(() => {
-    const fetchRutinas = async () => {
-      if (!user || !user.token) {
-        console.error("User or user token is missing");
-        return;
-      }
-      const response = await fetch("/api/rutinas/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
+    fetchRutinas();
+  }, [user]);
+
+  const handleDeleteRutina = async (rutinaId) => {
+    try {
+      const response = await fetch(`/api/rutinas/${rutinaId}`, {
+        method: "DELETE",
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error("Error al eliminar la rutina");
       }
 
-      if (response.ok) {
-        const data = await response.json();
-        setRutinas(data);
-      }
-    };
-
-    fetchRutinas();
-  }, [user]);
+      await fetchRutinas();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div
@@ -48,10 +68,14 @@ function FragmentHistorial() {
           style={{ width: "100px", height: "50px" }}
         />
       </div>
-      <div className="overflow-auto flex-grow-1 mb-20">
+      <div className="overflow-auto flex-grow-1 mb-20 container-fluid">
         {rutinas.length > 0 ? (
           rutinas.map((rutina) => (
-            <ItemRutina key={rutina._id} rutina={rutina} />
+            <ItemRutina
+              key={rutina._id}
+              rutina={rutina}
+              onDelete={handleDeleteRutina}
+            />
           ))
         ) : (
           <p>No hay rutinas disponibles</p>

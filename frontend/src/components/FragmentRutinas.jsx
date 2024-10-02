@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { useRutinaContext } from "../hooks/useRutinaContext";
+// import { useRutinaContext } from "../hooks/useRutinaContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import useCreateRutina from "../hooks/useCreateRutina";
+import useGetDatosRutinas from "../hooks/useGetDatosRutinas";
 import logoApp from "../assets/logo_trainup1.png";
 import imgFacil from "../assets/easy.gif";
 import imgMedio from "../assets/normal.gif";
-import imgDificil from "../assets/dificil.png";
-import imgPersonalizado from "../assets/personalizado.png";
+import imgDificil from "../assets/dificil1.gif";
+import imgPersonalizado from "../assets/personalizado1.gif";
 
 function FragmentRutinas() {
   const { user } = useAuthContext();
@@ -15,8 +16,10 @@ function FragmentRutinas() {
   const estatura = user.estatura;
   const [imc, setImc] = useState(0);
   const [categoriaIMC, setCategoriaIMC] = useState("");
-  const { createRutina, createSesionRutina, isLoading, error } =
-    useCreateRutina();
+  const { createRutina, isLoading, error } = useCreateRutina();
+  const { rutinasCount, totalKcal, totalMinutos, rutinas, fetchDatosRutinas } =
+    useGetDatosRutinas();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const getImageUrl = () => {
     switch (selectedButton) {
@@ -68,11 +71,34 @@ function FragmentRutinas() {
   };
 
   const handleStart = async () => {
+    setErrorMessage("");
     const { nombreNivel, nombreEjercicio, intervalo } =
       levelParameters[selectedButton];
 
+    const rutinaExistente = rutinas.find(
+      (rutina) => rutina.ejercicio === nombreEjercicio
+    );
+
+    if (rutinaExistente && !rutinaExistente.fecha_fin) {
+      setErrorMessage("Ya tienes esa rutina creada.");
+      return;
+    }
+
     const rutina = await createRutina(nombreNivel, nombreEjercicio, intervalo);
+    if (rutina) {
+      await fetchDatosRutinas();
+    }
   };
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage("");
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   return (
     <div className="container-fluid" style={{ maxWidth: "400px" }}>
@@ -87,15 +113,15 @@ function FragmentRutinas() {
 
       <div className="row text-center py-2">
         <div className="col">
-          <h6>15</h6>
+          <h6>{rutinasCount}</h6>
           <small>Rutinas</small>
         </div>
         <div className="col">
-          <h6>3000</h6>
+          <h6>{totalKcal}</h6>
           <small>Kcal</small>
         </div>
         <div className="col">
-          <h6>345</h6>
+          <h6>{totalMinutos}</h6>
           <small>Minutos</small>
         </div>
       </div>
@@ -181,6 +207,10 @@ function FragmentRutinas() {
         </button>
         <div className="error" style={{ color: "red", marginTop: "10px" }}>
           {error ? error : ""}
+        </div>
+
+        <div className="error" style={{ color: "red", marginTop: "10px" }}>
+          {errorMessage || (error ? error : "")}
         </div>
       </div>
     </div>

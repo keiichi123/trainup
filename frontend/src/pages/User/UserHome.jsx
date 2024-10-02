@@ -21,7 +21,7 @@ function UserHome() {
   };
 
   return (
-    <div>
+    <div className="vh-100 justify-content-center">
       {renderFragment()}
       <NavBottom
         setActiveFragment={setActiveFragment}
