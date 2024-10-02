@@ -17,7 +17,9 @@ function SignIn() {
   return (
     <div
       className="container d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
+      style={{
+        maxWidth: "400px",
+      }}
     >
       <form
         className="signin mx-auto d-flex flex-column align-items-center"

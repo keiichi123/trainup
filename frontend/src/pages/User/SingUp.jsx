@@ -21,7 +21,9 @@ function SignUp() {
   return (
     <div
       className="container d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh", margin: "10vh 0vh" }}
+      style={{
+        maxWidth: "400px",
+      }}
     >
       <form
         className="signup mx-auto d-flex flex-column align-items-center"
