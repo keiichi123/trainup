@@ -17,9 +17,9 @@ const createSesionRutina = async (req, res) => {
 
 const getSesionRutinas = async (req, res) => {
   try {
-    const { rutinaid } = req.params;
-
-    const sesionrutinas = await SesionRutina.find({ rutinaid }).sort({
+    const { id } = req.params;
+    console.log(id);
+    const sesionrutinas = await SesionRutina.find({ id_rutina: id }).sort({
       createdAt: -1,
     });
 

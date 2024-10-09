@@ -29,7 +29,7 @@ const useGetDatosRutinas = () => {
 
         let totalKcalSum = 0; // Acumular calorías totales
         let totalMinutosSum = 0; // Acumular minutos totales
-
+        console.log(rutinasData);
         for (const rutina of rutinasData) {
           const sesionResponse = await fetch(
             `/api/sesionrutinas/rutina/${rutina._id}`,
@@ -49,8 +49,6 @@ const useGetDatosRutinas = () => {
             totalMinutosSum += SesionRutina.sesion_tiempo;
           });
         }
-        totalKcalSum = totalKcalSum / rutinasData.length; //trucoteca
-        totalMinutosSum = totalMinutosSum / rutinasData.length; //iron man
 
         setTotalKcal(totalKcalSum);
         setTotalMinutos(totalMinutosSum);
