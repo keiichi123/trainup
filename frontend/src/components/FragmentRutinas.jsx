@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import { useRutinaContext } from "../hooks/useRutinaContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import useCreateRutina from "../hooks/useCreateRutina";
 import useGetDatosRutinas from "../hooks/useGetDatosRutinas";
@@ -8,6 +7,7 @@ import imgFacil from "../assets/easy.gif";
 import imgMedio from "../assets/normal.gif";
 import imgDificil from "../assets/dificil1.gif";
 import imgPersonalizado from "../assets/personalizado1.gif";
+import { useNavigate } from "react-router-dom";
 
 function FragmentRutinas() {
   const { user } = useAuthContext();
@@ -20,6 +20,7 @@ function FragmentRutinas() {
   const { rutinasCount, totalKcal, totalMinutos, rutinas, fetchDatosRutinas } =
     useGetDatosRutinas();
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const getImageUrl = () => {
     switch (selectedButton) {
@@ -52,6 +53,7 @@ function FragmentRutinas() {
     }
     setCategoriaIMC(categoria);
   }, [peso, estatura]);
+
   const levelParameters = {
     Novato: {
       nombreNivel: "facil",
@@ -72,6 +74,12 @@ function FragmentRutinas() {
 
   const handleStart = async () => {
     setErrorMessage("");
+
+    if (selectedButton === "Personalizado") {
+      navigate("/frameobjetivos"); // Redirige al componente de ruta personalizada
+      return;
+    }
+
     const { nombreNivel, nombreEjercicio, intervalo } =
       levelParameters[selectedButton];
 
@@ -129,14 +137,10 @@ function FragmentRutinas() {
       <div className="border-top py-2">
         <div className="d-flex justify-content-between align-items-center">
           <h6>IMC</h6>
-          <span>{imc}</span>
+          <span>{categoriaIMC}</span>
         </div>
         <div className="d-flex justify-content-between align-items-center">
-          <span>{categoriaIMC}</span>
-          <span
-            className="badge bg-warning"
-            style={{ width: "10px", height: "10px" }}
-          ></span>
+          <span>{imc}</span>
         </div>
         <div className="d-flex justify-content-between mt-2">
           <small>15</small>

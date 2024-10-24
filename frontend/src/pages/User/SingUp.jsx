@@ -11,11 +11,40 @@ function SignUp() {
   const [edad, setEdad] = useState("");
   const [estatura, setEstatura] = useState("");
   const [peso, setPeso] = useState("");
+
+  // Nuevos estados para el sistema de unidades
+  const [pesoSistema, setPesoSistema] = useState("kg"); // "kg" o "lb"
+  const [estaturaSistema, setEstaturaSistema] = useState("cm"); // "cm" o "in"
+
   const { signup, isLoading, error } = useSignup();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await signup(username, email, password, cpassword, edad, estatura, peso);
+  };
+
+  // Función para cambiar el sistema de peso
+  const handlePesoChange = (sistema) => {
+    if (sistema !== pesoSistema) {
+      if (sistema === "lb") {
+        setPeso((prevPeso) => (prevPeso * 2.20462).toFixed(2)); // Convierte a lb
+      } else {
+        setPeso((prevPeso) => (prevPeso / 2.20462).toFixed(2)); // Convierte a kg
+      }
+      setPesoSistema(sistema);
+    }
+  };
+
+  // Función para cambiar el sistema de estatura
+  const handleEstaturaChange = (sistema) => {
+    if (sistema !== estaturaSistema) {
+      if (sistema === "in") {
+        setEstatura((prevEstatura) => (prevEstatura / 2.54).toFixed(2)); // Convierte a pulgadas
+      } else {
+        setEstatura((prevEstatura) => (prevEstatura * 2.54).toFixed(2)); // Convierte a cm
+      }
+      setEstaturaSistema(sistema);
+    }
   };
 
   return (
@@ -85,24 +114,73 @@ function SignUp() {
             value={edad}
           />
         </div>
+
+        {/* Campo de estatura con botones para alternar unidades */}
         <div className="mb-3 w-100">
           <label>Estatura:</label>
-          <input
-            type="number"
-            className="form-control"
-            onChange={(e) => setEstatura(e.target.value)}
-            value={estatura}
-          />
+          <div className="d-flex">
+            <input
+              type="number"
+              className="form-control"
+              onChange={(e) => setEstatura(e.target.value)}
+              value={estatura}
+            />
+            <div className="btn-group ms-2">
+              <button
+                type="button"
+                className={`btn btn-secondary ${
+                  estaturaSistema === "cm" ? "active" : ""
+                }`}
+                onClick={() => handleEstaturaChange("cm")}
+              >
+                cm
+              </button>
+              <button
+                type="button"
+                className={`btn btn-secondary ${
+                  estaturaSistema === "in" ? "active" : ""
+                }`}
+                onClick={() => handleEstaturaChange("in")}
+              >
+                in
+              </button>
+            </div>
+          </div>
         </div>
+
+        {/* Campo de peso con botones para alternar unidades */}
         <div className="mb-3 w-100">
           <label>Peso:</label>
-          <input
-            type="number"
-            className="form-control"
-            onChange={(e) => setPeso(e.target.value)}
-            value={peso}
-          />
+          <div className="d-flex">
+            <input
+              type="number"
+              className="form-control"
+              onChange={(e) => setPeso(e.target.value)}
+              value={peso}
+            />
+            <div className="btn-group ms-2">
+              <button
+                type="button"
+                className={`btn btn-secondary ${
+                  pesoSistema === "kg" ? "active" : ""
+                }`}
+                onClick={() => handlePesoChange("kg")}
+              >
+                kg
+              </button>
+              <button
+                type="button"
+                className={`btn btn-secondary ${
+                  pesoSistema === "lb" ? "active" : ""
+                }`}
+                onClick={() => handlePesoChange("lb")}
+              >
+                lb
+              </button>
+            </div>
+          </div>
         </div>
+
         <div className="text-center">
           <button
             disabled={isLoading}

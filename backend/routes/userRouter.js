@@ -10,6 +10,7 @@ import {
   deleteUserById,
   getUserById,
   updateUserById,
+  verify2FA,
 } from "../controllers/userController.js";
 
 //import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
@@ -20,6 +21,7 @@ router.route("/").post(createUser);
 //.get(authenticate, authorizeAdmin, getAllUsers);
 
 router.post("/login", loginUser);
+router.post("/verify2fa", verify2FA);
 router.post("/logout", logoutCurrentUser);
 router.post("/signup", createUser);
 router.patch("/updateuser", authenticate, updateCurrentUserProfile);

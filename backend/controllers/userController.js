@@ -1,5 +1,7 @@
 import User from "../models/userModel.js";
 //import asyncHandler from "../middlewares/asyncHandler.js";
+import { send2FACode } from "../utils/emailService.js";
+import speakeasy from "speakeasy";
 import bcrypt from "bcryptjs";
 import createToken from "../utils/createToken.js";
 import validator from "validator";
@@ -83,24 +85,53 @@ const loginUser = async (req, res) => {
     );
 
     if (isPasswordValid) {
-      const token = createToken(res, existingUser._id);
-
-      res.status(201).json({
-        _id: existingUser._id,
-        username: existingUser.username,
-        email: existingUser.email,
-        password: existingUser.password,
-        edad: existingUser.edad,
-        estatura: existingUser.estatura,
-        peso: existingUser.peso,
-        token,
+      const twoFACode = speakeasy.totp({
+        secret: process.env.TWOFA_SECRET,
+        encoding: "base32",
       });
-      return;
+
+      await send2FACode(existingUser.email, twoFACode);
+
+      existingUser.twoFACode = twoFACode;
+      await existingUser.save();
+
+      return res.status(200).json({
+        message: "Código de verificación enviado a tu correo",
+        userId: existingUser._id,
+        secretcode: existingUser.twoFACode,
+      });
     } else {
       return res.status(400).json({ error: "Inicio de sesión fallido" });
     }
   } else {
     return res.status(400).json({ error: "Ese usuario no existe" });
+  }
+};
+
+const verify2FA = async (req, res) => {
+  const { userId, code, secretCode } = req.body;
+  console.log(userId, " ", code);
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return res.status(400).json({ error: "Usuario no encontrado" });
+  }
+  console.log(secretCode);
+  if (secretCode === code) {
+    const token = createToken(res, user._id);
+
+    return res.status(200).json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      //password: existingUser.password,
+      edad: user.edad,
+      estatura: user.estatura,
+      peso: user.peso,
+      token,
+    });
+  } else {
+    return res.status(400).json({ error: "Código de verificación incorrecto" });
   }
 };
 
@@ -231,4 +262,5 @@ export {
   deleteUserById,
   getUserById,
   updateUserById,
+  verify2FA,
 };

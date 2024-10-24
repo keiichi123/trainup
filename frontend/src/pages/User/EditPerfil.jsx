@@ -49,7 +49,7 @@ function EditPerfil() {
             <input
               type="text"
               className="form-control"
-              value={username}
+              placeholder={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
@@ -58,7 +58,6 @@ function EditPerfil() {
             <input
               type="password"
               className="form-control"
-              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
@@ -67,7 +66,7 @@ function EditPerfil() {
             <input
               type="number"
               className="form-control"
-              value={edad}
+              placeholder={edad}
               onChange={(e) => setEdad(e.target.value)}
             />
           </div>
@@ -76,7 +75,7 @@ function EditPerfil() {
             <input
               type="number"
               className="form-control"
-              value={estatura}
+              placeholder={estatura}
               onChange={(e) => setEstatura(e.target.value)}
             />
           </div>
@@ -85,7 +84,7 @@ function EditPerfil() {
             <input
               type="number"
               className="form-control"
-              value={peso}
+              placeholder={peso}
               onChange={(e) => setPeso(e.target.value)}
             />
           </div>

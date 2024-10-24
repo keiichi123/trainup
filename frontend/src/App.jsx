@@ -10,6 +10,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuthContext } from "./hooks/useAuthContext";
 import EditPerfil from "./pages/User/EditPerfil";
 import EditRutina from "./pages/User/EditRutina";
+import FrameObjetivos from "./pages/User/FrameObjetivos";
+import FrameDescanso from "./pages/User/FrameDescanso";
 
 function App() {
   const { user } = useAuthContext();
@@ -36,6 +38,10 @@ function App() {
         <Route
           path="/updaterutina/:id"
           element={user ? <EditRutina /> : <Navigate to="/login" />}
+        ></Route>
+        <Route
+          path="/frameobjetivos"
+          element={user ? <FrameDescanso /> : <Navigate to="/login" />}
         ></Route>
       </Routes>
     </BrowserRouter>
