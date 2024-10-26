@@ -11,18 +11,31 @@ function EditPerfil() {
   const [username, setUsername] = useState(user.username);
   const [password, setPassword] = useState("");
   const [edad, setEdad] = useState(user.edad);
-  const [estatura, setEstatura] = useState(user.estatura);
-  const [peso, setPeso] = useState(user.peso);
+
+  // Sistema de medidas y valores para estatura y peso
+  const [systMedida, setSystMedida] = useState(user.systmedida);
+  const [estatura, setEstatura] = useState(user.estatura || "");
+  const [estaturaFt, setEstaturaFt] = useState(""); // Para ft/in
+  const [estaturaIn, setEstaturaIn] = useState(""); // Para ft/in
+  const [peso, setPeso] = useState(user.peso || "");
 
   const handleClick = (e) => {
     e.preventDefault();
+
+    // Convertimos la estatura a pulgadas si estamos usando ft/in
+    const estaturaFinal = systMedida
+      ? estatura
+      : parseInt(estaturaFt || 0) * 12 + parseInt(estaturaIn || 0);
+
     const updatedUser = {
       username,
       password,
       edad,
-      estatura,
+      estatura: estaturaFinal,
       peso,
+      systmedida: systMedida,
     };
+
     editProfile(updatedUser);
   };
 
@@ -70,25 +83,106 @@ function EditPerfil() {
               onChange={(e) => setEdad(e.target.value)}
             />
           </div>
+
+          {/* Campo de estatura con alternancia de unidades */}
           <div className="col-12">
             <label className="form-label">Estatura:</label>
-            <input
-              type="number"
-              className="form-control"
-              placeholder={estatura}
-              onChange={(e) => setEstatura(e.target.value)}
-            />
+            <div className="d-flex">
+              {systMedida ? (
+                // Input de estatura en cm
+                <input
+                  type="number"
+                  className="form-control"
+                  value={estatura}
+                  onChange={(e) => setEstatura(e.target.value)}
+                  placeholder="cm"
+                />
+              ) : (
+                // Inputs de estatura en ft y in
+                <>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={estaturaFt}
+                    onChange={(e) => setEstaturaFt(e.target.value)}
+                    placeholder="ft"
+                    style={{ marginRight: "5px" }}
+                  />
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={estaturaIn}
+                    onChange={(e) => setEstaturaIn(e.target.value)}
+                    placeholder="in"
+                  />
+                </>
+              )}
+              <div className="btn-group ms-2">
+                <button
+                  type="button"
+                  className={`btn btn-secondary ${systMedida ? "active" : ""}`}
+                  onClick={() => {
+                    setSystMedida(true);
+                    setEstatura("");
+                    setEstaturaFt("");
+                    setEstaturaIn("");
+                    setPeso("");
+                  }}
+                  disabled={systMedida}
+                >
+                  cm
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-secondary ${!systMedida ? "active" : ""}`}
+                  onClick={() => {
+                    setSystMedida(false);
+                    setEstatura("");
+                    setEstaturaFt("");
+                    setEstaturaIn("");
+                    setPeso("");
+                  }}
+                  disabled={!systMedida}
+                >
+                  in
+                </button>
+              </div>
+            </div>
           </div>
+
+          {/* Campo de peso con botones para alternar unidades */}
           <div className="col-12">
             <label className="form-label">Peso:</label>
-            <input
-              type="number"
-              className="form-control"
-              placeholder={peso}
-              onChange={(e) => setPeso(e.target.value)}
-            />
+            <div className="d-flex">
+              <input
+                type="number"
+                className="form-control"
+                value={peso}
+                onChange={(e) => setPeso(e.target.value)}
+                placeholder={systMedida ? "kg" : "lb"}
+              />
+              <div className="btn-group ms-2">
+                <button
+                  type="button"
+                  className={`btn btn-secondary ${systMedida ? "active" : ""}`}
+                  onClick={() => setSystMedida(true)}
+                  disabled={systMedida}
+                >
+                  kg
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-secondary ${!systMedida ? "active" : ""}`}
+                  onClick={() => setSystMedida(false)}
+                  disabled={!systMedida}
+                >
+                  lb
+                </button>
+              </div>
+            </div>
           </div>
         </form>
+
         <div className="text-center mt-2">
           <Link to="/" className="btn btn-warning me-4">
             Cancelar

@@ -15,7 +15,8 @@ export const useSignup = () => {
     cpassword,
     edad,
     estatura,
-    peso
+    peso,
+    systmedida
   ) => {
     setIsLoading(true);
     setError(null);
@@ -31,6 +32,7 @@ export const useSignup = () => {
         edad,
         estatura,
         peso,
+        systmedida,
       }),
     });
     const data = await response.json();

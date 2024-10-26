@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSignin } from "../../hooks/useSignin";
-import TwoFAModal from "../../components/AuthEmailModal";
+import AuthEmailModal from "../../components/AuthEmailModal";
 import logoApp from "../../assets/logo_trainup1.png";
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signin, verify2FACode, error, isLoading, requires2FA } = useSignin();
+  const { trySignin, verify2FACode, error, isLoading, requires2FA } =
+    useSignin();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signin(email, password);
+    await trySignin(email, password);
   };
 
   return (
@@ -77,13 +78,17 @@ function SignIn() {
           <label>¿No tienes una cuenta?</label>
           <Link to="/register"> Regístrate</Link>
         </div>
+        <div>
+          <br />
+          <Link to="/changepass">¿Olvidaste tu contraseña?</Link>
+        </div>
         <div className="error" style={{ color: "red", marginTop: "10px" }}>
           {error ? error : ""}
         </div>
       </form>
 
       {/* Mostrar el modal si se requiere 2FA */}
-      <TwoFAModal
+      <AuthEmailModal
         isVisible={requires2FA}
         onVerify={verify2FACode}
         error={error}

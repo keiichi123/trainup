@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 function FragmentRutinas() {
   const { user } = useAuthContext();
   const [selectedButton, setSelectedButton] = useState("Novato");
+  const systmedida = user.systmedida;
   const peso = user.peso;
   const estatura = user.estatura;
   const [imc, setImc] = useState(0);
@@ -38,7 +39,17 @@ function FragmentRutinas() {
   };
 
   useEffect(() => {
-    const calculoIMC = peso / (estatura * estatura);
+    let pesoEnKg = peso;
+    let estaturaEnM = estatura;
+
+    if (!systmedida) {
+      pesoEnKg = peso * 0.453592;
+      estaturaEnM = estatura * 0.0254;
+    } else {
+      estaturaEnM = estatura / 100;
+    }
+
+    const calculoIMC = pesoEnKg / (estaturaEnM * estaturaEnM);
     setImc(calculoIMC.toFixed(1));
 
     let categoria = "";
@@ -52,7 +63,7 @@ function FragmentRutinas() {
       categoria = "Obesidad";
     }
     setCategoriaIMC(categoria);
-  }, [peso, estatura]);
+  }, [peso, estatura, systmedida]);
 
   const levelParameters = {
     Novato: {
@@ -76,7 +87,7 @@ function FragmentRutinas() {
     setErrorMessage("");
 
     if (selectedButton === "Personalizado") {
-      navigate("/frameobjetivos"); // Redirige al componente de ruta personalizada
+      navigate("/frameobjetivos");
       return;
     }
 

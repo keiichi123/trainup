@@ -17,7 +17,6 @@ export const send2FACode = async (email, code) => {
     subject: "Tu código de verificación",
     text: `Tu código de verificación es ${code}`,
   };
-  console.log(email, " ", code, " ");
 
   try {
     await transporter.sendMail(mailOptions);

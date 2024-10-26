@@ -7,8 +7,16 @@ import createToken from "../utils/createToken.js";
 import validator from "validator";
 
 const createUser = async (req, res) => {
-  const { username, email, password, cpassword, edad, estatura, peso } =
-    req.body;
+  const {
+    username,
+    email,
+    password,
+    cpassword,
+    edad,
+    estatura,
+    peso,
+    systmedida,
+  } = req.body;
   const userExists = await User.findOne({ email });
 
   if (
@@ -48,6 +56,7 @@ const createUser = async (req, res) => {
     edad,
     estatura,
     peso,
+    systmedida,
   });
 
   try {
@@ -61,6 +70,7 @@ const createUser = async (req, res) => {
       edad: newUser.edad,
       estatura: newUser.estatura,
       peso: newUser.peso,
+      systmedida: newUser.systmedida,
       token,
     });
   } catch (error) {
@@ -69,7 +79,7 @@ const createUser = async (req, res) => {
   }
 };
 
-const loginUser = async (req, res) => {
+const tryLoginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -108,27 +118,93 @@ const loginUser = async (req, res) => {
   }
 };
 
+const tryChangePass = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Ingrese su correo electronico" });
+  }
+
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    const twoFACode = speakeasy.totp({
+      secret: process.env.TWOFA_SECRET,
+      encoding: "base32",
+    });
+
+    await send2FACode(existingUser.email, twoFACode);
+
+    existingUser.twoFACode = twoFACode;
+    await existingUser.save();
+
+    return res.status(200).json({
+      message: "Código de verificación enviado a tu correo",
+      userId: existingUser._id,
+      secretcode: existingUser.twoFACode,
+    });
+  } else {
+    return res.status(400).json({ error: "Ese usuario no existe" });
+  }
+};
+
+const changeUserPass = async (req, res) => {
+  const { idUser, passUser, confirmPass } = req.body;
+  const user = await User.findById(idUser);
+
+  if (!passUser) {
+    return res.status(400).json({ error: "Ingrese su nueva contraseña" });
+  }
+  if (passUser !== confirmPass) {
+    return res.status(400).json({ error: "La contraseña no coincide" });
+  }
+  if (!validator.isStrongPassword(req.body.passUser)) {
+    return res.status(400).json({ error: "Contraseña débil" });
+  }
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.passUser, salt);
+  user.password = hashedPassword;
+  const updatedUser = await user.save();
+  const token = createToken(res, updatedUser._id);
+  return res.status(200).json({
+    _id: updatedUser._id,
+    username: updatedUser.username,
+    email: updatedUser.email,
+    edad: updatedUser.edad,
+    estatura: updatedUser.estatura,
+    peso: updatedUser.peso,
+    systmedida: updatedUser.systmedida,
+    token,
+  });
+};
+
+const loginUser = async (req, res) => {
+  const { idUser } = req.body;
+  const user = await User.findById(idUser);
+  const token = createToken(res, user._id);
+
+  return res.status(200).json({
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    edad: user.edad,
+    estatura: user.estatura,
+    peso: user.peso,
+    systmedida: user.systmedida,
+    token,
+  });
+};
+
 const verify2FA = async (req, res) => {
   const { userId, code, secretCode } = req.body;
-  console.log(userId, " ", code);
   const user = await User.findById(userId);
 
   if (!user) {
     return res.status(400).json({ error: "Usuario no encontrado" });
   }
-  console.log(secretCode);
   if (secretCode === code) {
-    const token = createToken(res, user._id);
-
     return res.status(200).json({
       _id: user._id,
-      username: user.username,
-      email: user.email,
-      //password: existingUser.password,
-      edad: user.edad,
-      estatura: user.estatura,
-      peso: user.peso,
-      token,
     });
   } else {
     return res.status(400).json({ error: "Código de verificación incorrecto" });
@@ -172,6 +248,7 @@ const updateCurrentUserProfile = async (req, res) => {
     user.edad = req.body.edad || user.edad;
     user.estatura = req.body.estatura || user.estatura;
     user.peso = req.body.peso || user.peso;
+    user.systmedida = req.body.systmedida;
 
     if (req.body.password) {
       if (!validator.isStrongPassword(req.body.password)) {
@@ -194,6 +271,7 @@ const updateCurrentUserProfile = async (req, res) => {
       edad: updatedUser.edad,
       estatura: updatedUser.estatura,
       peso: updatedUser.peso,
+      systmedida: updatedUser.systmedida,
     });
     return;
   } else {
@@ -254,6 +332,7 @@ const updateUserById = async (req, res) => {
 
 export {
   createUser,
+  tryLoginUser,
   loginUser,
   logoutCurrentUser,
   getAllUsers,
@@ -263,4 +342,6 @@ export {
   getUserById,
   updateUserById,
   verify2FA,
+  tryChangePass,
+  changeUserPass,
 };

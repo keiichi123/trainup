@@ -9,42 +9,36 @@ function SignUp() {
   const [cpassword, setCpassword] = useState("");
   const [username, setUsername] = useState("");
   const [edad, setEdad] = useState("");
-  const [estatura, setEstatura] = useState("");
+  const [estatura, setEstatura] = useState(""); // Para cm o in (total en pulgadas)
   const [peso, setPeso] = useState("");
 
-  // Nuevos estados para el sistema de unidades
-  const [pesoSistema, setPesoSistema] = useState("kg"); // "kg" o "lb"
-  const [estaturaSistema, setEstaturaSistema] = useState("cm"); // "cm" o "in"
+  // Estados adicionales para ft e in cuando systMedida está en false
+  const [estaturaFt, setEstaturaFt] = useState("");
+  const [estaturaIn, setEstaturaIn] = useState("");
+
+  // Estado para el sistema de medidas: true para cm/kg, false para ft/in
+  const [systMedida, setSystMedida] = useState(true);
 
   const { signup, isLoading, error } = useSignup();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signup(username, email, password, cpassword, edad, estatura, peso);
-  };
 
-  // Función para cambiar el sistema de peso
-  const handlePesoChange = (sistema) => {
-    if (sistema !== pesoSistema) {
-      if (sistema === "lb") {
-        setPeso((prevPeso) => (prevPeso * 2.20462).toFixed(2)); // Convierte a lb
-      } else {
-        setPeso((prevPeso) => (prevPeso / 2.20462).toFixed(2)); // Convierte a kg
-      }
-      setPesoSistema(sistema);
-    }
-  };
+    // Calculamos la estatura en pulgadas si systMedida está en false
+    const estaturaFinal = systMedida
+      ? estatura
+      : parseInt(estaturaFt || 0) * 12 + parseInt(estaturaIn || 0);
 
-  // Función para cambiar el sistema de estatura
-  const handleEstaturaChange = (sistema) => {
-    if (sistema !== estaturaSistema) {
-      if (sistema === "in") {
-        setEstatura((prevEstatura) => (prevEstatura / 2.54).toFixed(2)); // Convierte a pulgadas
-      } else {
-        setEstatura((prevEstatura) => (prevEstatura * 2.54).toFixed(2)); // Convierte a cm
-      }
-      setEstaturaSistema(sistema);
-    }
+    await signup(
+      username,
+      email,
+      password,
+      cpassword,
+      edad,
+      estaturaFinal,
+      peso,
+      systMedida
+    );
   };
 
   return (
@@ -115,32 +109,65 @@ function SignUp() {
           />
         </div>
 
-        {/* Campo de estatura con botones para alternar unidades */}
+        {/* Campo de estatura con alternancia de unidades */}
         <div className="mb-3 w-100">
           <label>Estatura:</label>
           <div className="d-flex">
-            <input
-              type="number"
-              className="form-control"
-              onChange={(e) => setEstatura(e.target.value)}
-              value={estatura}
-            />
+            {systMedida ? (
+              // Input de estatura en cm
+              <input
+                type="number"
+                className="form-control"
+                onChange={(e) => setEstatura(e.target.value)}
+                value={estatura}
+                placeholder="cm"
+              />
+            ) : (
+              // Inputs de estatura en ft y in
+              <>
+                <input
+                  type="number"
+                  className="form-control"
+                  onChange={(e) => setEstaturaFt(e.target.value)}
+                  value={estaturaFt}
+                  placeholder="ft"
+                  style={{ marginRight: "5px" }}
+                />
+                <input
+                  type="number"
+                  className="form-control"
+                  onChange={(e) => setEstaturaIn(e.target.value)}
+                  value={estaturaIn}
+                  placeholder="in"
+                />
+              </>
+            )}
             <div className="btn-group ms-2">
               <button
                 type="button"
-                className={`btn btn-secondary ${
-                  estaturaSistema === "cm" ? "active" : ""
-                }`}
-                onClick={() => handleEstaturaChange("cm")}
+                className={`btn btn-secondary ${systMedida ? "active" : ""}`}
+                onClick={() => {
+                  setSystMedida(true);
+                  setEstatura("");
+                  setEstaturaFt("");
+                  setEstaturaIn("");
+                  setPeso("");
+                }}
+                disabled={systMedida}
               >
                 cm
               </button>
               <button
                 type="button"
-                className={`btn btn-secondary ${
-                  estaturaSistema === "in" ? "active" : ""
-                }`}
-                onClick={() => handleEstaturaChange("in")}
+                className={`btn btn-secondary ${!systMedida ? "active" : ""}`}
+                onClick={() => {
+                  setSystMedida(false);
+                  setEstatura("");
+                  setEstaturaFt("");
+                  setEstaturaIn("");
+                  setPeso("");
+                }}
+                disabled={!systMedida}
               >
                 in
               </button>
@@ -157,23 +184,30 @@ function SignUp() {
               className="form-control"
               onChange={(e) => setPeso(e.target.value)}
               value={peso}
+              placeholder={systMedida ? "kg" : "lb"}
             />
             <div className="btn-group ms-2">
               <button
                 type="button"
-                className={`btn btn-secondary ${
-                  pesoSistema === "kg" ? "active" : ""
-                }`}
-                onClick={() => handlePesoChange("kg")}
+                className={`btn btn-secondary ${systMedida ? "active" : ""}`}
+                onClick={() => {
+                  setSystMedida(true);
+                  setPeso("");
+                  setEstatura("");
+                }}
+                disabled={systMedida}
               >
                 kg
               </button>
               <button
                 type="button"
-                className={`btn btn-secondary ${
-                  pesoSistema === "lb" ? "active" : ""
-                }`}
-                onClick={() => handlePesoChange("lb")}
+                className={`btn btn-secondary ${!systMedida ? "active" : ""}`}
+                onClick={() => {
+                  setSystMedida(false);
+                  setPeso("");
+                  setEstatura("");
+                }}
+                disabled={!systMedida}
               >
                 lb
               </button>

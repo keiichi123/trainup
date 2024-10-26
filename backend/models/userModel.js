@@ -32,6 +32,11 @@ const userSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
+
+    systmedida: {
+      type: Boolean,
+      required: true,
+    },
   },
   { timestamps: true }
 );

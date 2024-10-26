@@ -11,7 +11,8 @@ export const useUpdateUser = () => {
   const editProfile = async (updatedUser) => {
     setIsLoading(true);
     setError(null);
-    const token = localStorage.getItem("token");
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const token = storedUser.token;
     const response = await fetch("/api/users/updateuser", {
       method: "PATCH",
       headers: {
@@ -28,6 +29,7 @@ export const useUpdateUser = () => {
       setError(data.error);
     }
     if (response.ok) {
+      data.token = token;
       dispatch({ type: "UPDATE_USER", payload: data });
       localStorage.setItem("user", JSON.stringify(data));
       setIsLoading(false);

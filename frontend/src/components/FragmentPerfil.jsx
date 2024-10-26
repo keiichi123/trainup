@@ -9,9 +9,21 @@ import logoApp from "../assets/logo_trainup1.png";
 function FragmentPerfil() {
   const { logout } = useLogout();
   const { user } = useAuthContext();
+
   const handleClick = () => {
     logout();
   };
+
+  // Función para convertir cm a m
+  const convertirCmAMetros = (cm) => (cm / 100).toFixed(2);
+
+  // Función para convertir in a ft y in
+  const convertirInAPiesYPulgadas = (inches) => {
+    const feet = Math.floor(inches / 12);
+    const remainingInches = inches % 12;
+    return `${feet}'${remainingInches} ft`;
+  };
+
   return (
     <div
       className="container-fluid"
@@ -50,7 +62,7 @@ function FragmentPerfil() {
             />
           </Link>
         </div>
-        <h5 className="mt-3">{user.username}</h5>{" "}
+        <h5 className="mt-3">{user.username}</h5>
       </div>
 
       <div className="border p-3 rounded">
@@ -61,10 +73,13 @@ function FragmentPerfil() {
           <strong>Edad:</strong> {user.edad} años
         </p>
         <p>
-          <strong>Estatura:</strong> {user.estatura} metros
+          <strong>Estatura:</strong>{" "}
+          {user.systmedida
+            ? `${convertirCmAMetros(user.estatura)} m`
+            : convertirInAPiesYPulgadas(user.estatura)}
         </p>
         <p>
-          <strong>Peso:</strong> {user.peso} kg
+          <strong>Peso:</strong> {user.peso} {user.systmedida ? "kg" : "lb"}
         </p>
         <div className="text-center">
           <button onClick={handleClick} className="btn btn-danger">

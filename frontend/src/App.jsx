@@ -12,6 +12,7 @@ import EditPerfil from "./pages/User/EditPerfil";
 import EditRutina from "./pages/User/EditRutina";
 import FrameObjetivos from "./pages/User/FrameObjetivos";
 import FrameDescanso from "./pages/User/FrameDescanso";
+import ChangePassword from "./pages/User/ChangePassword";
 
 function App() {
   const { user } = useAuthContext();
@@ -26,7 +27,10 @@ function App() {
           path="/register"
           element={!user ? <SignUp /> : <Navigate to="/" />}
         ></Route>
-
+        <Route
+          path="/changepass"
+          element={!user ? <ChangePassword /> : <Navigate to="/" />}
+        ></Route>
         <Route
           path="/"
           element={user ? <UserHome /> : <Navigate to="/login" />}
