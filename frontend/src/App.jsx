@@ -13,6 +13,9 @@ import EditRutina from "./pages/User/EditRutina";
 import FrameObjetivos from "./pages/User/FrameObjetivos";
 import FrameDescanso from "./pages/User/FrameDescanso";
 import ChangePassword from "./pages/User/ChangePassword";
+import CreateRutinaPer from "./pages/User/CreateRutinaPer";
+import CreateRutinaBase from "./pages/User/CreateRutinaBase";
+import VerRutina from "./components/VerRutina";
 
 function App() {
   const { user } = useAuthContext();
@@ -40,11 +43,23 @@ function App() {
           element={user ? <EditPerfil /> : <Navigate to="/login" />}
         ></Route>
         <Route
-          path="/updaterutina/:id"
+          path="/updateejerciciorutina/:id"
           element={user ? <EditRutina /> : <Navigate to="/login" />}
         ></Route>
         <Route
-          path="/frameobjetivos"
+          path="/createrutinaper"
+          element={user ? <CreateRutinaPer /> : <Navigate to="/login" />}
+        ></Route>
+        <Route
+          path="/createrutinabase"
+          element={user ? <CreateRutinaBase /> : <Navigate to="/login" />}
+        ></Route>
+        <Route
+          path="/verrutina"
+          element={user ? <VerRutina /> : <Navigate to="/login" />}
+        ></Route>
+        <Route
+          path="/runrutina/:id"
           element={user ? <FrameDescanso /> : <Navigate to="/login" />}
         ></Route>
       </Routes>

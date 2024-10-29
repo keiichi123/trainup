@@ -20,7 +20,7 @@ function NavBottom({ setActiveFragment, activeFragment }) {
             className={getButtonClass("rutinas")}
           >
             <img src={iconRutina} alt="Rutinas" className="img-fluid w-50" />
-            <span className="small">Retos</span>
+            <span className="small">Home</span>
           </button>
         </div>
         <div className="col">

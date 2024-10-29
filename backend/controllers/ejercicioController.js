@@ -2,10 +2,10 @@ import Ejercicio from "../models/ejercicioModel.js";
 import mongoose from "mongoose";
 
 const createEjercicio = async (req, res) => {
-  const { nombre, descripcion } = req.body;
+  const { nombre, objetivo, tipo } = req.body;
 
   try {
-    const ejercicio = await Ejercicio.create({ nombre, descripcion });
+    const ejercicio = await Ejercicio.create({ nombre, objetivo, tipo });
     return res.status(200).json(ejercicio);
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -33,15 +33,29 @@ const getEjercicios = async (req, res) => {
   return res.status(200).json(ejercicios);
 };
 
+const getEjerciciosbyObjetivo = async (req, res) => {
+  const { objetivo } = req.params;
+  try {
+    const ejercicios = await Ejercicio.find({ objetivo });
+    return res.status(200).json(ejercicios);
+  } catch (error) {
+    console.error("Error fetching ejercicios by objetivo:", error);
+    return res.status(500).json({ error: "Error al obtener ejercicios" });
+  }
+};
+
 const getEjercicioById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const ejercicio = await Ejercicio.findById(id);
-
+    // Primero validamos que el id sea un ObjectId válido
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({ error: "No existe ese ejercicio" });
     }
+
+    // Luego buscamos el ejercicio por el _id
+    const ejercicio = await Ejercicio.findById(id);
+
     if (!ejercicio) {
       return res.status(404).json({ error: "No existe ese ejercicio" });
     }
@@ -52,4 +66,10 @@ const getEjercicioById = async (req, res) => {
   }
 };
 
-export { createEjercicio, getEjercicio, getEjercicios, getEjercicioById };
+export {
+  createEjercicio,
+  getEjercicio,
+  getEjercicios,
+  getEjercicioById,
+  getEjerciciosbyObjetivo,
+};

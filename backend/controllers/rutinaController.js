@@ -3,14 +3,13 @@ import SesionRutina from "../models/sesionRutinaModel.js";
 import mongoose from "mongoose";
 
 const createRutina = async (req, res) => {
-  const { id_usuario, ejercicio, nivel, fecha_inicio, intervalo } = req.body;
+  const { id_usuario, nombre, intensidad, fecha_inicio, intervalo } = req.body;
 
-  console.log("Cuerpo del POST kkkkk:", req.body);
   try {
     const rutina = await Rutina.create({
       id_usuario,
-      ejercicio,
-      nivel,
+      nombre,
+      intensidad,
       fecha_inicio,
       intervalo,
     });

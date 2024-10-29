@@ -61,7 +61,7 @@ function FragmentHistorial() {
       }}
     >
       <div className="d-flex justify-content-between align-items-center border-bottom p-3 border-bottom">
-        <h5>Historial de rutinas</h5>
+        <h5>Menú de rutinas</h5>
         <img
           src={logoApp}
           alt="Logo"

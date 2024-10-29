@@ -29,7 +29,7 @@ function FragmentRutinas() {
         return imgFacil;
       case "Intermedio":
         return imgMedio;
-      case "Extremo":
+      case "Avanzado":
         return imgDificil;
       case "Personalizado":
         return imgPersonalizado;
@@ -65,29 +65,18 @@ function FragmentRutinas() {
     setCategoriaIMC(categoria);
   }, [peso, estatura, systmedida]);
 
-  const levelParameters = {
-    Novato: {
-      nombreNivel: "facil",
-      nombreEjercicio: "cardio",
-      intervalo: 7,
-    },
-    Intermedio: {
-      nombreNivel: "medio",
-      nombreEjercicio: "fuerza",
-      intervalo: 5,
-    },
-    Extremo: {
-      nombreNivel: "dificil",
-      nombreEjercicio: "resistencia",
-      intervalo: 1,
-    },
-  };
-
   const handleStart = async () => {
     setErrorMessage("");
 
     if (selectedButton === "Personalizado") {
-      navigate("/frameobjetivos");
+      navigate("/createrutinaper");
+      return;
+    }
+
+    if (["Novato", "Intermedio", "Avanzado"].includes(selectedButton)) {
+      navigate("/createrutinabase", {
+        state: { selectedButton },
+      });
       return;
     }
 
@@ -179,7 +168,7 @@ function FragmentRutinas() {
       </div>
 
       <div className="d-flex justify-content-between py-2 border-top">
-        {["Novato", "Intermedio", "Extremo", "Personalizado"].map((level) => (
+        {["Novato", "Intermedio", "Avanzado", "Personalizado"].map((level) => (
           <button
             key={level}
             className={`py-2 flex-fill m-0 ${

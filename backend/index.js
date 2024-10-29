@@ -9,6 +9,7 @@ import rutinaRouter from "./routes/rutinaRouter.js";
 import ejercicioRouter from "./routes/ejercicioRouter.js";
 import nivelRouter from "./routes/nivelRouter.js";
 import sesionRutinaRouter from "./routes/sesionRutinaRouter.js";
+import rutinaEjercicioRouter from "./routes/rutinaEjercicioRouter.js";
 
 dotenv.config();
 const port = process.env.PORT;
@@ -26,5 +27,6 @@ app.use("/api/rutinas", rutinaRouter);
 app.use("/api/ejercicios", ejercicioRouter);
 app.use("/api/niveles", nivelRouter);
 app.use("/api/sesionrutinas", sesionRutinaRouter);
+app.use("/api/rutinaejercicios", rutinaEjercicioRouter);
 
 app.listen(port, () => console.log(`Server running on port: ${port}`));

@@ -7,12 +7,12 @@ const rutinaSchema = mongoose.Schema(
       required: true,
     },
 
-    ejercicio: {
+    nombre: {
       type: String,
       required: true,
     },
 
-    nivel: {
+    intensidad: {
       type: String,
       required: true,
     },

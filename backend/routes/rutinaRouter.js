@@ -14,6 +14,6 @@ router.get("/", authenticate, getRutinas);
 router.get("/:id", getRutina);
 router.post("/", createRutina);
 router.delete("/:id", authenticate, deleteRutina);
-router.patch("/:id", authenticate, updateRutina);
+router.patch("/:id", updateRutina);
 
 export default router;

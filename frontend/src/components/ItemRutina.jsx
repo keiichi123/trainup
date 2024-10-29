@@ -1,25 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function ItemRutina({ rutina, onDelete }) {
-  const tiempoPorNivel = {
-    facil: 5,
-    medio: 10,
-    dificil: 15,
-  };
-
-  const intensidadPorNivel = {
-    facil: "baja",
-    medio: "media",
-    dificil: "alta",
-  };
-
   const [showConfirm, setShowConfirm] = useState(false);
+  const navigate = useNavigate();
 
-  const tiempoRutina = tiempoPorNivel[rutina.nivel] || 0;
-  const intensidadRutina = intensidadPorNivel[rutina.nivel] || "";
-
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (e) => {
+    e.stopPropagation(); // Evitar que el click en "Cancelar" redirija
     setShowConfirm(true);
   };
 
@@ -28,23 +15,32 @@ function ItemRutina({ rutina, onDelete }) {
     setShowConfirm(false);
   };
 
-  const handleCancelDelete = () => {
+  const handleCancelDelete = (e) => {
+    e.stopPropagation(); // Evitar que el click en "Cancelar" redirija
     setShowConfirm(false);
   };
 
+  const handleNavigate = () => {
+    navigate("/verrutina", { state: rutina }); // Pasar los datos de la rutina
+  };
+
   return (
-    <div className="border rounded p-3 m-3 shadow">
+    <div
+      className="border rounded p-3 m-3 shadow"
+      onClick={handleNavigate} // Manejar la navegación al hacer clic en el item
+      style={{ cursor: "pointer" }} // Cambiar cursor para indicar que es clickeable
+    >
       <div className="d-flex justify-content-between align-items-center mb-2">
         <p className="mb-0">
-          <strong>Ejercicio:</strong>
+          <strong>Nombre:</strong>
         </p>
-        <p className="mb-0 text-secondary">{rutina.ejercicio}</p>
+        <p className="mb-0 text-secondary">{rutina.nombre}</p>
       </div>
       <div className="d-flex justify-content-between align-items-center mb-2">
         <p className="mb-0">
           <strong>Intensidad:</strong>
         </p>
-        <p className="mb-0 text-secondary">{intensidadRutina}</p>
+        <p className="mb-0 text-secondary">{rutina.intensidad}</p>
       </div>
       <div className="d-flex justify-content-between align-items-center mb-2">
         <p className="mb-0">
@@ -52,17 +48,12 @@ function ItemRutina({ rutina, onDelete }) {
         </p>
         <p className="mb-0 text-secondary">cada {rutina.intervalo} días</p>
       </div>
-      <div className="d-flex justify-content-between align-items-center mb-2">
-        <p className="mb-0">
-          <strong>Tiempo:</strong>
-        </p>
-        <p className="mb-0 text-secondary">{tiempoRutina} minutos</p>
-      </div>
 
       <div className="d-flex justify-content-end mt-2">
         <Link
           to={`/updaterutina/${rutina._id}`}
           className="btn btn-warning me-2"
+          onClick={(e) => e.stopPropagation()} // Evitar redirección al hacer clic en Editar
         >
           Editar
         </Link>

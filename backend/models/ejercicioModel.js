@@ -6,8 +6,13 @@ const ejercicioSchema = mongoose.Schema({
     required: true,
   },
 
-  descripcion: {
+  objetivo: {
     type: String,
+    required: true,
+  },
+
+  tipo: {
+    type: Boolean,
     required: true,
   },
 });

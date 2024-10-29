@@ -1,31 +1,47 @@
 import React from "react";
+import logo from "../../assets/logo_trainup1.png";
 
-function FrameObjetivos() {
+function FrameObjetivos({ onSelectObjective }) {
   return (
-    <div
-      className="container-fluid d-flex flex-column justify-content-center align-items-center py-4"
-      style={{ maxWidth: "400px" }}
-    >
-      <h5 className="mb-2 text-center">¿Cuál es tu objetivo?</h5>
-      <p className="text-center mb-4">
-        Crea un ejercicio personalizado para tu rutina
-      </p>
+    <div className="container-fluid" style={{ maxWidth: "400px" }}>
+      <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
+        <h5 className="mb-0">Creando Rutina</h5>
+        <img src={logo} alt="Logo" style={{ width: "100px", height: "50px" }} />
+      </div>
+      <div className="p-3">
+        <h6 className="mb-2 text-center">¿Cuál es tu objetivo?</h6>
+        <p className="text-center mb-4">
+          Crea un ejercicio personalizado para tu rutina
+        </p>
+      </div>
 
       <div className="w-100">
-        {/* Opción 1: Pierde Peso */}
-        <button className="btn btn-outline-primary w-100 mb-3 py-3 d-flex align-items-center justify-content-center">
-          <i className="bi bi-clipboard me-2"></i> Pierde Peso
-        </button>
-
-        {/* Opción 2: Tonificarte */}
-        <button className="btn btn-outline-primary w-100 mb-3 py-3 d-flex align-items-center justify-content-center">
-          <i className="bi bi-heart-pulse me-2"></i> Tonificarte
-        </button>
-
-        {/* Opción 3: Aumentar Músculo */}
-        <button className="btn btn-outline-primary w-100 py-3 d-flex align-items-center justify-content-center">
-          <i className="bi bi-arm-flex me-2"></i> Aumentar Músculo
-        </button>
+        {/* Botones de opción */}
+        {[
+          {
+            label: "Pierde Peso",
+            objective: "Rutina para Perder Peso",
+            icon: "bi bi-clipboard",
+          },
+          {
+            label: "Tonificarte",
+            objective: "Rutina para Tonificarte",
+            icon: "bi bi-heart-pulse",
+          },
+          {
+            label: "Aumentar Músculo",
+            objective: "Rutina de Volumen",
+            icon: "bi bi-arm-flex",
+          },
+        ].map((option) => (
+          <button
+            key={option.label}
+            className="btn btn-outline-primary w-100 mb-3 py-3 d-flex align-items-center justify-content-center"
+            onClick={() => onSelectObjective(option.objective)}
+          >
+            <i className={`${option.icon} me-2`}></i> {option.label}
+          </button>
+        ))}
       </div>
     </div>
   );
