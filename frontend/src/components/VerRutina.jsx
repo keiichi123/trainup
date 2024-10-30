@@ -44,12 +44,14 @@ const VerRutina = () => {
       }}
     >
       <div className="d-flex justify-content-between align-items-center border-bottom p-3">
-        <h2>Detalles de la Rutina</h2>
-        <img
-          src={logoApp}
-          alt="Logo"
-          style={{ width: "100px", height: "50px" }}
-        />
+        <h5>Detalles de la Rutina</h5>
+        <button onClick={() => navigate("/")}>
+          <img
+            src={logoApp}
+            alt="Logo"
+            style={{ width: "100px", height: "50px" }}
+          />
+        </button>
       </div>
       <div className="border rounded p-3 mb-4 shadow">
         <p>
@@ -63,7 +65,7 @@ const VerRutina = () => {
         </p>
       </div>
 
-      <h3>Ejercicios</h3>
+      <h5>Ejercicios</h5>
       {error ? (
         <p className="text-danger">{error}</p>
       ) : (

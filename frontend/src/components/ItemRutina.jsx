@@ -6,7 +6,7 @@ function ItemRutina({ rutina, onDelete }) {
   const navigate = useNavigate();
 
   const handleDeleteClick = (e) => {
-    e.stopPropagation(); // Evitar que el click en "Cancelar" redirija
+    e.stopPropagation();
     setShowConfirm(true);
   };
 
@@ -16,19 +16,19 @@ function ItemRutina({ rutina, onDelete }) {
   };
 
   const handleCancelDelete = (e) => {
-    e.stopPropagation(); // Evitar que el click en "Cancelar" redirija
+    e.stopPropagation();
     setShowConfirm(false);
   };
 
   const handleNavigate = () => {
-    navigate("/verrutina", { state: rutina }); // Pasar los datos de la rutina
+    navigate("/verrutina", { state: rutina });
   };
 
   return (
     <div
       className="border rounded p-3 m-3 shadow"
-      onClick={handleNavigate} // Manejar la navegación al hacer clic en el item
-      style={{ cursor: "pointer" }} // Cambiar cursor para indicar que es clickeable
+      onClick={handleNavigate}
+      style={{ cursor: "pointer" }}
     >
       <div className="d-flex justify-content-between align-items-center mb-2">
         <p className="mb-0">
@@ -50,13 +50,13 @@ function ItemRutina({ rutina, onDelete }) {
       </div>
 
       <div className="d-flex justify-content-end mt-2">
-        <Link
+        {/* <Link
           to={`/updaterutina/${rutina._id}`}
           className="btn btn-warning me-2"
-          onClick={(e) => e.stopPropagation()} // Evitar redirección al hacer clic en Editar
+          onClick={(e) => e.stopPropagation()}
         >
           Editar
-        </Link>
+        </Link> */}
         <button className="btn btn-danger" onClick={handleDeleteClick}>
           Cancelar
         </button>
@@ -71,11 +71,6 @@ function ItemRutina({ rutina, onDelete }) {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Confirmar Eliminación</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={handleCancelDelete}
-                ></button>
               </div>
               <div className="modal-body">
                 <p>¿Estás seguro de que deseas eliminar esta rutina?</p>

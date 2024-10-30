@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/logo_trainup1.png";
+import logoApp from "../../assets/logo_trainup1.png";
 import ItemEjercicio from "../../components/ItemEjercicio";
 import AddEjercicioModal from "../../components/AddEjercicioModal";
 import AddIntervaloModal from "../../components/AddIntervaloModal";
@@ -61,7 +61,21 @@ const CreateRutinaPersonalizada = ({ objetivo }) => {
     <div className="container-fluid" style={{ maxWidth: "400px" }}>
       <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
         <h5 className="mb-0">Rutina Personalizada</h5>
-        <img src={logo} alt="Logo" style={{ width: "100px", height: "50px" }} />
+        <button
+          onClick={() => navigate("/")}
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+          }}
+        >
+          <img
+            src={logoApp}
+            alt="Logo"
+            style={{ width: "100px", height: "50px" }}
+          />
+        </button>
       </div>
       <label className="mb-3">{nombreRutina}:</label>
       <br />

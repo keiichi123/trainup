@@ -1,12 +1,28 @@
 import React from "react";
-import logo from "../../assets/logo_trainup1.png";
+import logoApp from "../../assets/logo_trainup1.png";
+import { useNavigate } from "react-router";
 
 function FrameObjetivos({ onSelectObjective }) {
+  const navigate = useNavigate();
   return (
     <div className="container-fluid" style={{ maxWidth: "400px" }}>
       <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
         <h5 className="mb-0">Creando Rutina</h5>
-        <img src={logo} alt="Logo" style={{ width: "100px", height: "50px" }} />
+        <button
+          onClick={() => navigate("/")}
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+          }}
+        >
+          <img
+            src={logoApp}
+            alt="Logo"
+            style={{ width: "100px", height: "50px" }}
+          />
+        </button>
       </div>
       <div className="p-3">
         <h6 className="mb-2 text-center">¿Cuál es tu objetivo?</h6>

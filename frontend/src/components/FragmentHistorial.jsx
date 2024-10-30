@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import ItemRutina from "./ItemRutina";
 import logoApp from "../assets/logo_trainup1.png";
+import { useNavigate } from "react-router";
 
 function FragmentHistorial() {
   const [rutinas, setRutinas] = useState([]);
   const { user } = useAuthContext();
+  const navigate = useNavigate();
 
   const fetchRutinas = async () => {
     if (!user || !user.token) {
@@ -46,8 +48,7 @@ function FragmentHistorial() {
       if (!response.ok) {
         throw new Error("Error al eliminar la rutina");
       }
-
-      await fetchRutinas();
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
