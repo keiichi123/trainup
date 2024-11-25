@@ -66,10 +66,43 @@ const getEjercicioById = async (req, res) => {
   }
 };
 
+const updateEjercicio = async (req, res) => {
+  const { id } = req.params; // ID del ejercicio
+  const { nombre, objetivo, tipo, link } = req.body; // Datos a actualizar
+
+  try {
+    // Validar si existe el ejercicio
+    const ejercicio = await Ejercicio.findById(id);
+    if (!ejercicio) {
+      return res.status(404).json({ error: "Ejercicio no encontrado" });
+    }
+
+    // Actualizar el ejercicio
+    const updatedEjercicio = await Ejercicio.findByIdAndUpdate(
+      id,
+      {
+        ...(nombre && { nombre }),
+        ...(objetivo && { objetivo }),
+        ...(tipo !== undefined && { tipo }),
+        ...(link && { link }),
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updatedEjercicio);
+  } catch (error) {
+    res.status(500).json({
+      error: "Error al actualizar el ejercicio",
+      details: error.message,
+    });
+  }
+};
+
 export {
   createEjercicio,
   getEjercicio,
   getEjercicios,
   getEjercicioById,
   getEjerciciosbyObjetivo,
+  updateEjercicio,
 };

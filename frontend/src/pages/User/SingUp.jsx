@@ -100,9 +100,9 @@ function SignUp() {
           />
         </div>
         <div className="mb-3 w-100">
-          <label>Edad:</label>
+          <label>Fecha de nacimiento:</label>
           <input
-            type="number"
+            type="date"
             className="form-control"
             onChange={(e) => setEdad(e.target.value)}
             value={edad}

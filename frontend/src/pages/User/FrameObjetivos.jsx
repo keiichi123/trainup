@@ -5,9 +5,26 @@ import { useNavigate } from "react-router";
 function FrameObjetivos({ onSelectObjective }) {
   const navigate = useNavigate();
   return (
-    <div className="container-fluid" style={{ maxWidth: "400px" }}>
-      <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
-        <h5 className="mb-0">Creando Rutina</h5>
+    <div
+      className="container-fluid"
+      style={{
+        maxWidth: "800px",
+        marginTop: "20px",
+        marginLeft: "auto",
+        marginRight: "auto", // Centra el contenedor
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "16px",
+          borderBottom: "1px solid #ddd",
+        }}
+      >
+        <h5 style={{ margin: 0 }}>Creando Rutina</h5>
         <button
           onClick={() => navigate("/")}
           style={{
@@ -24,38 +41,78 @@ function FrameObjetivos({ onSelectObjective }) {
           />
         </button>
       </div>
-      <div className="p-3">
-        <h6 className="mb-2 text-center">¿Cuál es tu objetivo?</h6>
-        <p className="text-center mb-4">
+
+      {/* Título y descripción */}
+      <div style={{ padding: "16px", textAlign: "center" }}>
+        <h6 style={{ marginBottom: "8px" }}>¿Cuál es tu objetivo?</h6>
+        <p style={{ color: "#888", marginBottom: "16px" }}>
           Crea un ejercicio personalizado para tu rutina
         </p>
       </div>
 
-      <div className="w-100">
-        {/* Botones de opción */}
+      {/* Contenedor de botones */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "16px",
+        }}
+      >
+        {/* Botones de opciones */}
         {[
           {
             label: "Pierde Peso",
             objective: "Rutina para Perder Peso",
             icon: "bi bi-clipboard",
+            color: "#f39c12",
           },
           {
             label: "Tonificarte",
             objective: "Rutina para Tonificarte",
             icon: "bi bi-heart-pulse",
+            color: "#2980b9",
           },
           {
             label: "Aumentar Músculo",
             objective: "Rutina de Volumen",
             icon: "bi bi-arm-flex",
+            color: "#27ae60",
           },
         ].map((option) => (
           <button
             key={option.label}
-            className="btn btn-outline-primary w-100 mb-3 py-3 d-flex align-items-center justify-content-center"
             onClick={() => onSelectObjective(option.objective)}
+            style={{
+              backgroundColor: option.color,
+              color: "white",
+              borderRadius: "8px",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "240px", // Controla el ancho
+              height: "120px", // Controla la altura
+              padding: "0", // Sin padding extra
+              fontSize: "18px",
+              fontWeight: "bold",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = "scale(1.05)";
+              e.target.style.boxShadow = "0 6px 8px rgba(0,0,0,0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+            }}
           >
-            <i className={`${option.icon} me-2`}></i> {option.label}
+            <i
+              className={`${option.icon} me-3`}
+              style={{ fontSize: "30px", marginRight: "8px" }}
+            ></i>
+            {option.label}
           </button>
         ))}
       </div>

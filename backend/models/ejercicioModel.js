@@ -15,6 +15,11 @@ const ejercicioSchema = mongoose.Schema({
     type: Boolean,
     required: true,
   },
+
+  link: {
+    type: String,
+    required: false,
+  },
 });
 
 const Ejercicio = mongoose.model("Ejercicio", ejercicioSchema);

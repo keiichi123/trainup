@@ -4,7 +4,7 @@ import { useLogout } from "../hooks/useLogout";
 import { useAuthContext } from "../hooks/useAuthContext";
 import perfilPic from "../assets/perfil_pic1.png";
 import iconEditar from "../assets/icon_editar.png";
-import logoApp from "../assets/logo_trainup1.png";
+import fondo_workout from "../assets/workout_bg.gif";
 
 function FragmentPerfil() {
   const { logout } = useLogout();
@@ -12,6 +12,18 @@ function FragmentPerfil() {
 
   const handleClick = () => {
     logout();
+  };
+
+  // Función para calcular la edad según la fecha de nacimiento
+  const calcularEdad = (fechaNacimiento) => {
+    const hoy = new Date();
+    const fechaNac = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - fechaNac.getFullYear();
+    const mes = hoy.getMonth() - fechaNac.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+      edad--;
+    }
+    return edad;
   };
 
   // Función para convertir cm a m
@@ -25,66 +37,73 @@ function FragmentPerfil() {
   };
 
   return (
-    <div
-      className="container-fluid"
-      style={{
-        maxWidth: "400px",
-      }}
-    >
-      <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
-        <h5>Perfil</h5>
-        <img
-          src={logoApp}
-          alt="Logo"
-          style={{ width: "100px", height: "50px" }}
-        />
-      </div>
-
-      <div className="text-center my-4">
-        <div className="position-relative d-inline-block">
-          <img
-            src={perfilPic}
-            alt="Foto de perfil"
-            className="rounded-circle"
-            style={{ width: "150px", height: "150px" }}
-          />
-          <Link to="/updateuser">
+    <div className="container py-4">
+      <div className="row g-4 align-items-center">
+        {/* Columna izquierda: Foto y acciones */}
+        <div className="col-md-4 text-center">
+          <div className="position-relative d-inline-block">
             <img
-              src={iconEditar}
-              alt="Editar perfil"
-              className="position-absolute top-0 end-0"
-              style={{
-                width: "1.5rem",
-                height: "1.5rem",
-                cursor: "pointer",
-                left: "120px",
-              }}
+              src={perfilPic}
+              alt="Foto de perfil"
+              className="rounded-circle border shadow"
+              style={{ width: "300px", height: "300px" }}
             />
-          </Link>
-        </div>
-        <h5 className="mt-3">{user.username}</h5>
-      </div>
-
-      <div className="border p-3 rounded">
-        <p>
-          <strong>Nombre:</strong> {user.username}
-        </p>
-        <p>
-          <strong>Edad:</strong> {user.edad} años
-        </p>
-        <p>
-          <strong>Estatura:</strong>{" "}
-          {user.systmedida
-            ? `${convertirCmAMetros(user.estatura)} m`
-            : convertirInAPiesYPulgadas(user.estatura)}
-        </p>
-        <p>
-          <strong>Peso:</strong> {user.peso} {user.systmedida ? "kg" : "lb"}
-        </p>
-        <div className="text-center">
-          <button onClick={handleClick} className="btn btn-danger">
+            <Link to="/updateuser">
+              <img
+                src={iconEditar}
+                alt="Editar perfil"
+                className="position-absolute"
+                style={{
+                  width: "2rem",
+                  height: "2rem",
+                  cursor: "pointer",
+                  bottom: "10px",
+                  right: "10px",
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.transform = "scale(1.3)";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.transform = "scale(1)";
+                }}
+              />
+            </Link>
+          </div>
+          <h4 className="mt-3">{user.username}</h4>
+          <button onClick={handleClick} className="btn btn-danger mt-3">
             Cerrar Sesión
           </button>
+        </div>
+
+        {/* Columna derecha: Datos del usuario */}
+        <div className="col-md-8">
+          <div
+            className="border rounded p-4 shadow-sm"
+            style={{
+              backgroundImage: `url(${fondo_workout})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              opacity: "0.9",
+            }}
+          >
+            <h5 className="mb-4">Datos del Usuario</h5>
+            <p>
+              <strong>Nombre:</strong> {user.username}
+            </p>
+            <p>
+              <strong>Edad:</strong> {calcularEdad(user.edad)} años
+            </p>
+            <p>
+              <strong>Estatura:</strong>{" "}
+              {user.systmedida
+                ? `${convertirCmAMetros(user.estatura)} m`
+                : convertirInAPiesYPulgadas(user.estatura)}
+            </p>
+            <p>
+              <strong>Peso:</strong> {user.peso} {user.systmedida ? "kg" : "lb"}
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ const userSchema = mongoose.Schema(
     },
 
     edad: {
-      type: Number,
+      type: Date,
       required: true,
     },
 

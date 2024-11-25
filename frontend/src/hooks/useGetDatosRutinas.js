@@ -49,8 +49,8 @@ const useGetDatosRutinas = () => {
           });
         }
 
-        setTotalKcal(totalKcalSum);
-        setTotalMinutos(totalMinutosSum);
+        setTotalKcal(totalKcalSum.toFixed(4));
+        setTotalMinutos(totalMinutosSum.toFixed(2));
       } else {
         setError(rutinasData.error);
       }

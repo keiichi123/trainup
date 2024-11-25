@@ -1,18 +1,38 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useRutinaContext } from "../hooks/useRutinaContext";
+import iconBasura from "../assets/basura.png";
 
 function ItemRutina({ rutina, onDelete }) {
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
+  const { dispatch } = useRutinaContext();
 
   const handleDeleteClick = (e) => {
     e.stopPropagation();
     setShowConfirm(true);
   };
 
-  const handleConfirmDelete = () => {
-    onDelete(rutina._id);
-    setShowConfirm(false);
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await fetch(`/api/rutinas/${rutina._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Hubo un problema al eliminar la rutina");
+      }
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error al eliminar la rutina:", error);
+    } finally {
+      setShowConfirm(false);
+    }
   };
 
   const handleCancelDelete = (e) => {
@@ -21,6 +41,18 @@ function ItemRutina({ rutina, onDelete }) {
   };
 
   const handleNavigate = () => {
+    // Dispara el dispatch para almacenar la rutina seleccionada en el contexto
+    dispatch({
+      type: "SET_RUTINA",
+      payload: {
+        id: rutina._id,
+        nombre: rutina.nombre,
+        intensidad: rutina.intensidad,
+        intervalo: rutina.intervalo,
+      },
+    });
+
+    // Navega a la pantalla de Ver Rutina
     navigate("/verrutina", { state: rutina });
   };
 
@@ -50,15 +82,12 @@ function ItemRutina({ rutina, onDelete }) {
       </div>
 
       <div className="d-flex justify-content-end mt-2">
-        {/* <Link
-          to={`/updaterutina/${rutina._id}`}
-          className="btn btn-warning me-2"
-          onClick={(e) => e.stopPropagation()}
+        <button
+          className="btn btn-danger"
+          style={{ borderRadius: "10px", height: "50px", width: "50px" }}
+          onClick={handleDeleteClick}
         >
-          Editar
-        </Link> */}
-        <button className="btn btn-danger" onClick={handleDeleteClick}>
-          Cancelar
+          <img src={iconBasura} alt="icono_basura" />
         </button>
       </div>
 

@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import ItemRutina from "./ItemRutina";
-import logoApp from "../assets/logo_trainup1.png";
-import { useNavigate } from "react-router";
 
 function FragmentHistorial() {
   const [rutinas, setRutinas] = useState([]);
   const { user } = useAuthContext();
-  const navigate = useNavigate();
 
   const fetchRutinas = async () => {
-    if (!user || !user.token) {
-      console.error("User or user token is missing");
-      return;
-    }
+    if (!user || !user.token) return;
 
     const response = await fetch("/api/rutinas/", {
       method: "GET",
@@ -23,15 +17,9 @@ function FragmentHistorial() {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
     if (response.ok) {
       const data = await response.json();
-      // Filtrar las rutinas que no tienen fecha_fin
-      const rutinasSinFechaFin = data.filter((rutina) => !rutina.fecha_fin);
-      setRutinas(rutinasSinFechaFin);
+      setRutinas(data.filter((rutina) => !rutina.fecha_fin)); // Solo rutinas activas
     }
   };
 
@@ -39,47 +27,39 @@ function FragmentHistorial() {
     fetchRutinas();
   }, [user]);
 
-  const handleDeleteRutina = async (rutinaId) => {
-    try {
-      const response = await fetch(`/api/rutinas/${rutinaId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al eliminar la rutina");
-      }
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
-    <div
-      className="container-fluid"
-      style={{
-        maxWidth: "400px",
-      }}
-    >
-      <div className="d-flex justify-content-between align-items-center border-bottom p-3 border-bottom">
-        <h5>Menú de rutinas</h5>
-        <img
-          src={logoApp}
-          alt="Logo"
-          style={{ width: "100px", height: "50px" }}
-        />
+    <div className="container py-4">
+      {/* Título */}
+      <div className="mb-3">
+        <h2 className="text-center">Menú de Rutinas</h2>
+        <p className="text-muted text-center">
+          Aquí puedes ver todas tus rutinas
+        </p>
       </div>
-      <div className="overflow-auto flex-grow-1 mb-20 container-fluid">
+
+      {/* Listado de rutinas */}
+      <div
+        className="row g-4"
+        style={{
+          gap: "1.5rem",
+        }}
+      >
         {rutinas.length > 0 ? (
           rutinas.map((rutina) => (
-            <ItemRutina
+            <div
               key={rutina._id}
-              rutina={rutina}
-              onDelete={handleDeleteRutina}
-            />
+              className="card shadow-sm p-3"
+              style={{
+                flex: "1 1 300px",
+                minWidth: "400PX",
+                maxWidth: "400px",
+              }}
+            >
+              <ItemRutina rutina={rutina} />
+            </div>
           ))
         ) : (
-          <p>No hay rutinas disponibles</p>
+          <p className="text-center w-100">No hay rutinas disponibles</p>
         )}
       </div>
     </div>

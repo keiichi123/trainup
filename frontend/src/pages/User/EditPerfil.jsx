@@ -40,163 +40,179 @@ function EditPerfil() {
   };
 
   return (
-    <div
-      className="container-fluid"
-      style={{
-        maxWidth: "400px",
-      }}
-    >
-      <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
-        <h5 className="mb-0">Editar Perfil</h5>
-        <img src={perfilPic} alt="Foto de perfil" style={{ height: "40px" }} />
-      </div>
-
-      <div className="text-center my-3">
-        <h5 className="mt-3">{user.username}</h5>
-      </div>
-
-      <div className="border p-3 rounded container">
-        <form className="row g-3">
-          <div className="col-12">
-            <label className="form-label">Nombre:</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder={username}
-              onChange={(e) => setUsername(e.target.value)}
+    <div className="container-fluid py-4 d-flex justify-content-center">
+      <div className="row g-4 justify-content-center">
+        {/* Columna izquierda: Foto de perfil */}
+        <div
+          className="col-lg-3 col-md-4 text-center"
+          style={{ marginTop: "100px" }}
+        >
+          <div className="d-flex justify-content-center">
+            <img
+              src={perfilPic}
+              alt="Foto de perfil"
+              className="rounded-circle border shadow"
+              style={{ width: "300px", height: "300px" }}
             />
           </div>
-          <div className="col-12">
-            <label className="form-label">Contraseña:</label>
-            <input
-              type="password"
-              className="form-control"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="col-12">
-            <label className="form-label">Edad:</label>
-            <input
-              type="number"
-              className="form-control"
-              placeholder={edad}
-              onChange={(e) => setEdad(e.target.value)}
-            />
-          </div>
-
-          {/* Campo de estatura con alternancia de unidades */}
-          <div className="col-12">
-            <label className="form-label">Estatura:</label>
-            <div className="d-flex">
-              {systMedida ? (
-                // Input de estatura en cm
-                <input
-                  type="number"
-                  className="form-control"
-                  value={estatura}
-                  onChange={(e) => setEstatura(e.target.value)}
-                  placeholder="cm"
-                />
-              ) : (
-                // Inputs de estatura en ft y in
-                <>
-                  <input
-                    type="number"
-                    className="form-control"
-                    value={estaturaFt}
-                    onChange={(e) => setEstaturaFt(e.target.value)}
-                    placeholder="ft"
-                    style={{ marginRight: "5px" }}
-                  />
-                  <input
-                    type="number"
-                    className="form-control"
-                    value={estaturaIn}
-                    onChange={(e) => setEstaturaIn(e.target.value)}
-                    placeholder="in"
-                  />
-                </>
-              )}
-              <div className="btn-group ms-2">
-                <button
-                  type="button"
-                  className={`btn btn-secondary ${systMedida ? "active" : ""}`}
-                  onClick={() => {
-                    setSystMedida(true);
-                    setEstatura("");
-                    setEstaturaFt("");
-                    setEstaturaIn("");
-                    setPeso("");
-                  }}
-                  disabled={systMedida}
-                >
-                  cm
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn-secondary ${!systMedida ? "active" : ""}`}
-                  onClick={() => {
-                    setSystMedida(false);
-                    setEstatura("");
-                    setEstaturaFt("");
-                    setEstaturaIn("");
-                    setPeso("");
-                  }}
-                  disabled={!systMedida}
-                >
-                  in
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Campo de peso con botones para alternar unidades */}
-          <div className="col-12">
-            <label className="form-label">Peso:</label>
-            <div className="d-flex">
-              <input
-                type="number"
-                className="form-control"
-                value={peso}
-                onChange={(e) => setPeso(e.target.value)}
-                placeholder={systMedida ? "kg" : "lb"}
-              />
-              <div className="btn-group ms-2">
-                <button
-                  type="button"
-                  className={`btn btn-secondary ${systMedida ? "active" : ""}`}
-                  onClick={() => setSystMedida(true)}
-                  disabled={systMedida}
-                >
-                  kg
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn-secondary ${!systMedida ? "active" : ""}`}
-                  onClick={() => setSystMedida(false)}
-                  disabled={!systMedida}
-                >
-                  lb
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
-
-        <div className="text-center mt-2">
-          <Link to="/" className="btn btn-warning me-4">
-            Cancelar
-          </Link>
-          <button
-            onClick={handleClick}
-            className="btn btn-success"
-            disabled={isLoading}
-          >
-            {isLoading ? "Guardando..." : "Guardar"}
-          </button>
+          <h5 className="mt-3">{user.username}</h5>
         </div>
-        <div className="error" style={{ color: "red", marginTop: "10px" }}>
-          {error ? error : ""}
+
+        {/* Columna derecha: Campos de edición */}
+        <div className="col-lg-4 col-md-8" style={{ marginTop: "100px" }}>
+          <div className="border rounded p-4 shadow-sm">
+            <h5 className="mb-4">Editar Perfil</h5>
+            <form className="row g-3">
+              <div className="col-12">
+                <label className="form-label">Nombre:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="col-12">
+                <label className="form-label">Contraseña:</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="col-12">
+                <label className="form-label">Fecha de nacimiento:</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={edad ? new Date(edad).toISOString().split("T")[0] : ""}
+                  onChange={(e) => setEdad(e.target.value)}
+                />
+              </div>
+
+              {/* Campo de estatura con alternancia de unidades */}
+              <div className="col-12">
+                <label className="form-label">Estatura:</label>
+                <div className="d-flex">
+                  {systMedida ? (
+                    // Input de estatura en cm
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={estatura}
+                      onChange={(e) => setEstatura(e.target.value)}
+                      placeholder="cm"
+                    />
+                  ) : (
+                    // Inputs de estatura en ft y in
+                    <>
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={estaturaFt}
+                        onChange={(e) => setEstaturaFt(e.target.value)}
+                        placeholder="ft"
+                        style={{ marginRight: "5px" }}
+                      />
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={estaturaIn}
+                        onChange={(e) => setEstaturaIn(e.target.value)}
+                        placeholder="in"
+                      />
+                    </>
+                  )}
+                  <div className="btn-group ms-2">
+                    <button
+                      type="button"
+                      className={`btn btn-secondary ${
+                        systMedida ? "active" : ""
+                      }`}
+                      onClick={() => {
+                        setSystMedida(true);
+                        setEstatura("");
+                        setEstaturaFt("");
+                        setEstaturaIn("");
+                        setPeso("");
+                      }}
+                      disabled={systMedida}
+                    >
+                      cm
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn btn-secondary ${
+                        !systMedida ? "active" : ""
+                      }`}
+                      onClick={() => {
+                        setSystMedida(false);
+                        setEstatura("");
+                        setEstaturaFt("");
+                        setEstaturaIn("");
+                        setPeso("");
+                      }}
+                      disabled={!systMedida}
+                    >
+                      in
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Campo de peso con botones para alternar unidades */}
+              <div className="col-12">
+                <label className="form-label">Peso:</label>
+                <div className="d-flex">
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={peso}
+                    onChange={(e) => setPeso(e.target.value)}
+                    placeholder={systMedida ? "kg" : "lb"}
+                  />
+                  <div className="btn-group ms-2">
+                    <button
+                      type="button"
+                      className={`btn btn-secondary ${
+                        systMedida ? "active" : ""
+                      }`}
+                      onClick={() => setSystMedida(true)}
+                      disabled={systMedida}
+                    >
+                      kg
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn btn-secondary ${
+                        !systMedida ? "active" : ""
+                      }`}
+                      onClick={() => setSystMedida(false)}
+                      disabled={!systMedida}
+                    >
+                      lb
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div className="text-center mt-2">
+              <Link to="/" className="btn btn-secondary me-4">
+                Cancelar
+              </Link>
+              <button
+                onClick={handleClick}
+                className="btn btn-success"
+                disabled={isLoading}
+              >
+                {isLoading ? "Guardando..." : "Guardar"}
+              </button>
+            </div>
+            <div className="error" style={{ color: "red", marginTop: "10px" }}>
+              {error ? error : ""}
+            </div>
+          </div>
         </div>
       </div>
     </div>

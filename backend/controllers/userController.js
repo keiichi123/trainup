@@ -43,7 +43,20 @@ const createUser = async (req, res) => {
   if (!validator.isStrongPassword(password)) {
     return res.status(400).json({ error: "Contraseña débil" });
   }
-  if (!validator.isInt(String(edad), { min: 18, max: 100 })) {
+  const calcularEdad = (fechaNacimiento) => {
+    const hoy = new Date();
+    const fechaNac = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - fechaNac.getFullYear();
+    const mes = hoy.getMonth() - fechaNac.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+      edad--;
+    }
+    return edad;
+  };
+
+  const edadUsuario = calcularEdad(edad);
+
+  if (!validator.isInt(String(edadUsuario), { min: 18, max: 100 })) {
     return res.status(400).json({ error: "Edad no válida" });
   }
 

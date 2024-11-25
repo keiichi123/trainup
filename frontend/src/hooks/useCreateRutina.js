@@ -38,50 +38,6 @@ const useCreateRutina = () => {
     }
   };
 
-  const createSesionRutina = async (id_rutina, nombreNivel) => {
-    let calorias, tiempo;
-
-    switch (nombreNivel) {
-      case "facil":
-        calorias = 30;
-        tiempo = 5;
-        break;
-      case "normal":
-        calorias = 60;
-        tiempo = 10;
-        break;
-      case "dificil":
-        calorias = 90;
-        tiempo = 15;
-        break;
-      default:
-        calorias = 60;
-        tiempo = 10;
-    }
-
-    const response = await fetch("/api/sesionrutinas/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id_rutina,
-        sesion_calorias: calorias,
-        sesion_tiempo: tiempo,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      setIsLoading(false);
-      return data;
-    } else {
-      setIsLoading(false);
-      setError(data.error);
-    }
-  };
-
   const createRutinaPer = async (
     intensidad,
     nombreRutina,
@@ -265,7 +221,6 @@ const useCreateRutina = () => {
   return {
     createRutina,
     createRutinaPer,
-    createSesionRutina,
     isLoading,
     error,
   };

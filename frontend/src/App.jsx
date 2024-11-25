@@ -16,9 +16,12 @@ import ChangePassword from "./pages/User/ChangePassword";
 import CreateRutinaPer from "./pages/User/CreateRutinaPer";
 import CreateRutinaBase from "./pages/User/CreateRutinaBase";
 import VerRutina from "./components/VerRutina";
+import RunRutina from "./pages/User/RunRutina";
+import { useRutinaContext } from "./hooks/useRutinaContext";
 
 function App() {
   const { user } = useAuthContext();
+  const { rutina } = useRutinaContext();
   return (
     <BrowserRouter>
       <Routes>
@@ -59,8 +62,8 @@ function App() {
           element={user ? <VerRutina /> : <Navigate to="/login" />}
         ></Route>
         <Route
-          path="/runrutina/:id"
-          element={user ? <FrameDescanso /> : <Navigate to="/login" />}
+          path="/runrutina"
+          element={rutina ? <RunRutina /> : <Navigate to="/" />}
         ></Route>
       </Routes>
     </BrowserRouter>

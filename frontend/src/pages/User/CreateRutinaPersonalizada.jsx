@@ -58,47 +58,140 @@ const CreateRutinaPersonalizada = ({ objetivo }) => {
   };
 
   return (
-    <div className="container-fluid" style={{ maxWidth: "400px" }}>
-      <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
-        <h5 className="mb-0">Rutina Personalizada</h5>
-        <button
-          onClick={() => navigate("/")}
+    <div
+      className="container-fluid"
+      style={{
+        maxWidth: "1200px",
+        marginTop: "20px",
+        marginLeft: "auto",
+        marginRight: "auto",
+        display: "flex",
+        flexDirection: "row", // Distribuye en filas horizontales
+        gap: "40px", // Espacio entre las columnas
+      }}
+    >
+      {/* Columna izquierda */}
+      <div
+        style={{
+          flex: 1,
+          minWidth: "400px", // Controla el tamaño mínimo de la columna
+          padding: "16px",
+          borderRight: "1px solid #ddd",
+        }}
+      >
+        {/* Título y Logo en la parte superior */}
+        <div
           style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingBottom: "16px",
+            borderBottom: "1px solid #ddd",
           }}
         >
-          <img
-            src={logoApp}
-            alt="Logo"
-            style={{ width: "100px", height: "50px" }}
-          />
-        </button>
-      </div>
-      <label className="mb-3">{nombreRutina}:</label>
-      <br />
-      {error && <div className="alert alert-danger">{error}</div>}
-      <ul className="list-group mb-3">
-        {ejercicios.map((ejercicio, index) => (
-          <ItemEjercicio key={index} ejercicio={ejercicio} />
-        ))}
-      </ul>
-      <button
-        onClick={() => setModalVisible(true)}
-        className="btn btn-primary mb-3"
-      >
-        Agregar ejercicio
-      </button>
-      <br />
+          <button
+            onClick={() => navigate("/")}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
+          >
+            <img
+              src={logoApp}
+              alt="Logo"
+              style={{ width: "160px", height: "80px" }}
+            />
+          </button>
+          <h5 style={{ margin: 0 }}>Rutina Personalizada</h5>
+        </div>
 
-      <button onClick={guardarRutina} className="btn btn-success me-2">
-        Guardar Rutina
-      </button>
-      <button onClick={cancelarCreacion} className="btn btn-secondary">
-        Cancelar
-      </button>
+        {/* Nombre de la rutina y lista de ejercicios */}
+        <label style={{ display: "block", marginBottom: "16px" }}>
+          {nombreRutina}:
+        </label>
+        {error && (
+          <div className="alert alert-danger" style={{ marginBottom: "16px" }}>
+            {error}
+          </div>
+        )}
+        <ul
+          className="list-group"
+          style={{
+            paddingLeft: "0",
+            listStyleType: "none",
+            marginBottom: "32px", // Espacio entre la lista de ejercicios y los botones
+          }}
+        >
+          {ejercicios.map((ejercicio, index) => (
+            <ItemEjercicio key={index} ejercicio={ejercicio} />
+          ))}
+        </ul>
+      </div>
+
+      {/* Columna derecha */}
+      <div
+        style={{
+          flex: 1,
+          minWidth: "200px", // Controla el tamaño mínimo de la columna
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px", // Espaciado entre los botones
+        }}
+      >
+        {/* Botón Agregar ejercicio en la parte superior */}
+        <button
+          onClick={() => setModalVisible(true)}
+          className="btn btn-primary"
+          style={{
+            padding: "10px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            marginBottom: "16px", // Separación del siguiente contenido
+          }}
+        >
+          Agregar ejercicio
+        </button>
+
+        {/* Separación entre los botones */}
+        <div style={{ marginTop: "auto" }} />
+
+        {/* Botones Guardar y Cancelar en la parte inferior, apilados verticalmente */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column", // Alineación vertical
+            gap: "16px", // Espacio entre los botones
+          }}
+        >
+          <button
+            onClick={guardarRutina}
+            className="btn btn-success"
+            style={{
+              padding: "10px",
+              fontSize: "16px",
+              fontWeight: "bold",
+            }}
+          >
+            Guardar Rutina
+          </button>
+          <button
+            onClick={cancelarCreacion}
+            className="btn btn-secondary"
+            style={{
+              padding: "10px",
+              fontSize: "16px",
+              fontWeight: "bold",
+            }}
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+
+      {/* Modales */}
       <AddEjercicioModal
         isVisible={modalVisible}
         objetivo={objetivo}
@@ -110,7 +203,6 @@ const CreateRutinaPersonalizada = ({ objetivo }) => {
         onGuardar={manejarGuardarRutina}
         onCerrar={() => setIntervaloModalVisible(false)}
       />
-      {error && <div className="alert alert-danger">{error}</div>}
     </div>
   );
 };
